@@ -54,7 +54,7 @@ namespace math {
 			vector_base(_T x, _T y, _T z = static_cast<_T>(1))
 				: x(x), y(y), z(z) {}
 
-			vector_base(radians<_T> const& theta, radians<_T> const& phi, _T radius)
+			vector_base(radians<_T> const& theta, radians<_T> const& phi, _T radius = static_cast<_T>(1))
 				: x(radius * std::sin(theta.value()) * std::cos(phi.value()))
 				, y(radius * std::sin(theta.value()) * std::sin(phi.value()))
 				, z(radius * std::cos(theta.value())) {}
