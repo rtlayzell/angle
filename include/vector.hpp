@@ -190,12 +190,11 @@ namespace math {
 	template <typename _T, typename _U, std::size_t _N>
 	typename std::common_type<_T, _U, float>::type dot_product(vector<_T, _N> const& lhs, vector<_U, _N> const& rhs) {
 		typedef typename std::common_type<_T, _U, float>::type common_t;
-		return std::inner_product(lhs.begin, lhs.end, rhs.begin(), static_cast<common_t>(0));
+		return std::inner_product(lhs.begin(), lhs.end(), rhs.begin(), static_cast<common_t>(0));
 	}
 
  	template <typename _T, typename _U, std::size_t _N>
  	vector<typename std::common_type<_T, _U, float>::type, _N> projection(vector<_T, _N> const& vec, vector<_U, _N> const& n) {
-		typedef typename std::common_type<_T, _U, float>::type common_t;
 		return dot_product(vec, n) / dot_product(n, n) * n;
 	}
 
