@@ -8,6 +8,8 @@
 #include <type_traits>
 #include <iosfwd>
 
+#include "angle.hpp"
+
 namespace math {
 
 	namespace internal {
@@ -26,10 +28,21 @@ namespace math {
 			_T x, y;
 
 			constexpr vector_base() = default;
-			vector_base(_T x, _T y) : x(x), y(y) {}
 
-			_T& operator [](std::size_t index) noexcept { return *(reinterpret_cast<_T*>(this) + index); }
-			_T const& operator [](std::size_t index) const noexcept { return *(reinterpret_cast<_T const*>(this) + index); }
+			vector_base(_T x, _T y)
+				: x(x), y(y) {}
+
+			vector_base(radians<_T> const& theta, _T radius = static_cast<_T>(1))
+				: x(radius * std::cos(theta.value()))
+				, y(radius * std::sin(theta.value())) {}
+
+			_T& operator [](std::size_t index) noexcept {
+				return *(reinterpret_cast<_T*>(this) + index);
+			}
+
+			_T const& operator [](std::size_t index) const noexcept {
+				return *(reinterpret_cast<_T const*>(this) + index);
+			}
 		};
 
 		template <typename _T>
@@ -37,11 +50,22 @@ namespace math {
 			_T x, y, z;
 
 			constexpr vector_base() = default;
+
 			vector_base(_T x, _T y, _T z = static_cast<_T>(1))
 				: x(x), y(y), z(z) {}
 
-			_T& operator [](std::size_t index) noexcept { return *(reinterpret_cast<_T*>(this) + index); }
-			_T const& operator [](std::size_t index) const noexcept { return *(reinterpret_cast<_T const*>(this) + index); }
+			vector_base(radians<_T> const& theta, radians<_T> const& phi, _T radius)
+				: x(radius * std::sin(theta.value()) * std::cos(phi.value()))
+				, y(radius * std::sin(theta.value()) * std::sin(phi.value()))
+				, z(radius * std::cos(theta.value())) {}
+
+			_T& operator [](std::size_t index) noexcept {
+				return *(reinterpret_cast<_T*>(this) + index);
+			}
+
+			_T const& operator [](std::size_t index) const noexcept {
+				return *(reinterpret_cast<_T const*>(this) + index);
+			}
 		};
 
 		template <typename _T>
@@ -52,8 +76,13 @@ namespace math {
 			vector_base(_T x, _T y, _T z, _T w = static_cast<_T>(1))
 				: x(x), y(y), z(z), w(w) {}
 
-			_T& operator [](std::size_t index) noexcept { return *(reinterpret_cast<_T*>(this) + index); }
-			_T const& operator [](std::size_t index) const noexcept { return *(reinterpret_cast<_T const*>(this) + index); }
+			_T& operator [](std::size_t index) noexcept {
+				return *(reinterpret_cast<_T*>(this) + index);
+			}
+
+			_T const& operator [](std::size_t index) const noexcept {
+				return *(reinterpret_cast<_T const*>(this) + index);
+			}
 		};
 	}
 
@@ -167,33 +196,33 @@ namespace math {
 
 	////////////////////////////////////////////////////////////////////////////////
 
-	template <typename _T, typename _U, std::size_t _N>
-	vector<typename std::common_type<_T, _U>::type, _N> operator + (vector<_T, _N> const& lhs, vector<_U, _N> const& rhs) {
-		typedef typename std::common_type<_T, _U>::type common_t;
+	template <typename _T1, typename _T2, std::size_t _N>
+	vector<typename std::common_type<_T1, _T2>::type, _N> operator + (vector<_T1, _N> const& lhs, vector<_T2, _N> const& rhs) {
+		typedef typename std::common_type<_T1, _T2>::type common_t;
 		return vector<common_t, _N>(lhs) += rhs;
 	}
 
-	template <typename _T, typename _U, std::size_t _N>
-	vector<typename std::common_type<_T, _U>::type, _N> operator - (vector<_T, _N> const& lhs, vector<_U, _N> const& rhs) {
-		typedef typename std::common_type<_T, _U>::type common_t;
+	template <typename _T1, typename _T2, std::size_t _N>
+	vector<typename std::common_type<_T1, _T2>::type, _N> operator - (vector<_T1, _N> const& lhs, vector<_T2, _N> const& rhs) {
+		typedef typename std::common_type<_T1, _T2>::type common_t;
 		return vector<common_t, _N>(lhs) -= rhs;
 	}
 
-	template <typename _T, typename _U, std::size_t _N>
-	vector<typename std::common_type<_T, _U>::type, _N> operator * (vector<_T, _N> const& vec, _U scalar) {
-		typedef typename std::common_type<_T, _U>::type common_t;
+	template <typename _T1, typename _T2, std::size_t _N>
+	vector<typename std::common_type<_T1, _T2>::type, _N> operator * (vector<_T1, _N> const& vec, _T2 scalar) {
+		typedef typename std::common_type<_T1, _T2>::type common_t;
 		return vector<common_t, _N>(vec) *= scalar;
 	}
 
-	template <typename _T, typename _U, std::size_t _N>
-	vector<typename std::common_type<_T, _U>::type, _N> operator * (_T scalar, vector<_U, _N> const& vec) {
-		typedef typename std::common_type<_T, _U>::type common_t;
+	template <typename _T1, typename _T2, std::size_t _N>
+	vector<typename std::common_type<_T1, _T2>::type, _N> operator * (_T1 scalar, vector<_T2, _N> const& vec) {
+		typedef typename std::common_type<_T1, _T2>::type common_t;
 		return vector<common_t, _N>(vec) *= scalar;
 	}
 
-	template <typename _T, typename _U, std::size_t _N>
-	vector<typename std::common_type<_T, _U>::type, _N> operator / (vector<_T, _N> const& vec, _U scalar) {
-		typedef typename std::common_type<_T, _U>::type common_t;
+	template <typename _T1, typename _T2, std::size_t _N>
+	vector<typename std::common_type<_T1, _T2>::type, _N> operator / (vector<_T1, _N> const& vec, _T2 scalar) {
+		typedef typename std::common_type<_T1, _T2>::type common_t;
 		return vector<common_t, _N>(vec) /= scalar;
 	}
 
@@ -224,9 +253,7 @@ namespace math {
 		return os << "\b\b \b";
 	}
 
-	#ifdef _MATH_ANGLE_HPP
-	// move the following into its angle and vector encompassing header.
-	// perhaps an over-arching math.hpp header.
+	////////////////////////////////////////////////////////////////////////////////
 
 	template <typename _T, typename _U, std::size_t _N>
 	radians<typename std::common_type<_T, _U, float>::type> inner_angle(vector<_T, _N> const& lhs, vector<_U, _N> const& rhs) {
@@ -237,8 +264,6 @@ namespace math {
 	radians<typename std::common_type<_T, _U, float>::type> outer_angle(vector<_T, _N> const& lhs, vector<_U, _N> const& rhs) {
 		return math::pi * 2 - inner_angle(lhs, rhs);
 	}
-
-	#endif
 }
 
 
