@@ -278,12 +278,14 @@ namespace math {
 
 	template <typename _T>
 	constexpr radians<typename std::common_type<_T, float>::type> rad(_T const& angle) {
-		return radians<typename std::common_type<_T, float>::type> { angle };
+		typedef typename std::common_type<_T, float>::type common_t;
+		return radians<common_t> { static_cast<common_t>(angle) };
 	}
 
 	template <typename _T>
 	constexpr revolutions<typename std::common_type<_T, float>::type> revs(_T const& angle) {
-		return revolutions<typename std::common_type<_T, float>::type> { angle };
+		typedef typename std::common_type<_T, float>::type common_t;
+		return revolutions<common_t> { static_cast<common_t>(angle) };
 	}
 
 	template <typename _T>
@@ -298,12 +300,14 @@ namespace math {
 
 	template <typename _T, typename _Traits>
 	constexpr radians<typename std::common_type<_T, float>::type> rad(basic_angle<_T, _Traits> const& angle) {
-		return radians<typename std::common_type<_T, float>::type> { angle };
+		typedef typename std::common_type<_T, float>::type common_t;
+		return radians<common_t> { static_cast<common_t>(angle) };
 	}
 
 	template <typename _T, typename _Traits>
 	constexpr revolutions<typename std::common_type<_T, float>::type> revs(basic_angle<_T, _Traits> const& angle) {
-		return revolutions<typename std::common_type<_T, float>::type> { angle };
+		typedef typename std::common_type<_T, float>::type common_t;
+		return revolutions<common_t> { static_cast<common_t>(angle) };
 	}
 
 	template <typename _T, typename _Traits>
