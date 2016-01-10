@@ -167,6 +167,24 @@ namespace math {
 		return vector<common_t, _N>(lhs) -= rhs;
 	}
 
+	template <typename _T, typename _U, std::size_t _N>
+	vector<typename std::common_type<_T, _U>::type, _N> operator * (vector<_T, _N> const& vec, _U scalar) {
+		typedef typename std::common_type<_T, _U>::type common_t;
+		return vector<common_t, _N>(vec) *= scalar;
+	}
+
+	template <typename _T, typename _U, std::size_t _N>
+	vector<typename std::common_type<_T, _U>::type, _N> operator * (_T scalar, vector<_U, _N> const& vec) {
+		typedef typename std::common_type<_T, _U>::type common_t;
+		return vector<common_t, _N>(vec) *= scalar;
+	}
+
+	template <typename _T, typename _U, std::size_t _N>
+	vector<typename std::common_type<_T, _U>::type, _N> operator / (vector<_T, _N> const& vec, _U scalar) {
+		typedef typename std::common_type<_T, _U>::type common_t;
+		return vector<common_t, _N>(vec) /= scalar;
+	}
+
 	////////////////////////////////////////////////////////////////////////////////
 
 	template <typename _T, typename _U, std::size_t _N>
