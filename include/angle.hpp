@@ -272,6 +272,49 @@ namespace math {
 	inline constexpr bool operator > (basic_angle<_T, _Traits> const& lhs, basic_angle<_T, _Traits> const& rhs) {
 		return rhs < lhs;
 	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	// helper functions.
+
+	template <typename _T>
+	radians<typename std::common_type<_T, float>::type> rad(_T const& angle) {
+		return { angle };
+	}
+
+	template <typename _T>
+	revolutions<typename std::common_type<_T, float>::type> revs(_T const& angle) {
+		return { angle };
+	}
+
+	template <typename _T>
+	degrees<_T> deg(_T const& angle) {
+		return degrees<_T>(angle);
+	}
+
+	template <typename _T>
+	gradians<_T> grad(_T const& angle) {
+		return gradians<_T>(angle);
+	}
+
+	template <typename _T, typename _Traits>
+	radians<typename std::common_type<_T, float>::type> rad(basic_angle<_T, _Traits> const& angle) {
+		return { angle };
+	}
+
+	template <typename _T, typename _Traits>
+	revolutions<typename std::common_type<_T, float>::type> revs(basic_angle<_T, _Traits> const& angle) {
+		return { angle };
+	}
+
+	template <typename _T, typename _Traits>
+	degrees<_T> deg(basic_angle<_T, _Traits> const& angle) {
+		return { angle };
+	}
+
+	template <typename _T, typename _Traits>
+	gradians<_T> grad(basic_angle<_T, _Traits> const& angle) {
+		return { angle };
+	}
 }
 
 #endif // _MATH_ANGLE_HPP
