@@ -4,7 +4,7 @@
 #include <iosfwd>
 #include <type_traits>
 
-namespace angle {
+namespace math {
 
 	template <typename _T>
 	struct radian_traits {
