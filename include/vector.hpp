@@ -56,7 +56,8 @@ namespace math {
 
 	template <typename _T, std::size_t _N>
 	struct vector : public internal::vector_base<_T, _N> {
-		static_assert(std::is_arithmetic<_T>::value, "vector<_T> requires arithmetic type.");
+		static_assert(std::is_arithmetic<_T>::value,
+			"vector<_T> requires arithmetic type.");
 
 		////////////////////////////////////////////////////////////////////////////////
 		// type definitions.
@@ -211,6 +212,22 @@ namespace math {
 		std::copy(vec.begin(), vec.end(), std::ostream_iterator<_T, _Elem, _Traits>(os, ", "));
 		return os << "\b\b \b";
 	}
+
+	#ifdef _MATH_ANGLE_HPP
+	// move the following into its angle and vector encompassing header.
+	// perhaps an over-arching math.hpp header.
+
+	template <typename _T, typename _U, std::size_t _N>
+	radians<typename std::common_type<_T, _U, float>::type> inner_angle(vector<_T, _N> const& lhs, vector<_U, _N> const& rhs) {
+		return radians<typename std::common_type<_T, _U, float>::type> { std::acos(dot_product(lhs, rhs) / (lhs.length() * rhs.length())) };
+	}
+
+	template <typename _T, typename _U, std::size_t _N>
+	radians<typename std::common_type<_T, _U, float>::type> outer_angle(vector<_T, _N> const& lhs, vector<_U, _N> const& rhs) {
+		return math::pi * 2 - inner_angle(lhs, rhs);
+	}
+
+	#endif
 }
 
 
