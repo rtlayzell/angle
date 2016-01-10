@@ -208,8 +208,8 @@ namespace math {
 
 	template <typename _Elem, typename _Traits, typename _T, std::size_t _N>
 	std::basic_ostream<_Elem, _Traits>& operator << (std::basic_ostream<_Elem, _Traits>& os, vector<_T, _N> const& vec) {
-		std::copy(vec.begin(), vec.end(), std::ostream_iterator<_T, _Elem, _Traits>(os, " "));
-		return os << '\b';
+		std::copy(vec.begin(), vec.end(), std::ostream_iterator<_T, _Elem, _Traits>(os, ", "));
+		return os << "\b\b \b";
 	}
 }
 
