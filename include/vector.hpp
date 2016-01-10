@@ -60,7 +60,7 @@ namespace math {
 	template <typename _T, std::size_t _N>
 	struct vector : public internal::vector_base<_T, _N> {
 		static_assert(std::is_arithmetic<_T>::value,
-			"vector<_T> requires arithmetic type.");
+			"vector<T, N> requires arithmetic type.");
 
 		////////////////////////////////////////////////////////////////////////////////
 		// type definitions.
