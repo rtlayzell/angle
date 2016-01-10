@@ -277,43 +277,43 @@ namespace math {
 	// helper functions.
 
 	template <typename _T>
-	radians<typename std::common_type<_T, float>::type> rad(_T const& angle) {
-		return { angle };
+	constexpr radians<typename std::common_type<_T, float>::type> rad(_T const& angle) {
+		return radians<typename std::common_type<_T, float>::type> { angle };
 	}
 
 	template <typename _T>
-	revolutions<typename std::common_type<_T, float>::type> revs(_T const& angle) {
-		return { angle };
+	constexpr revolutions<typename std::common_type<_T, float>::type> revs(_T const& angle) {
+		return revolutions<typename std::common_type<_T, float>::type> { angle };
 	}
 
 	template <typename _T>
-	degrees<_T> deg(_T const& angle) {
-		return degrees<_T>(angle);
+	constexpr degrees<_T> deg(_T const& angle) {
+		return degrees<_T> { angle };
 	}
 
 	template <typename _T>
-	gradians<_T> grad(_T const& angle) {
-		return gradians<_T>(angle);
+	constexpr gradians<_T> grad(_T const& angle) {
+		return gradians<_T> { angle };
 	}
 
 	template <typename _T, typename _Traits>
-	radians<typename std::common_type<_T, float>::type> rad(basic_angle<_T, _Traits> const& angle) {
-		return { angle };
+	constexpr radians<typename std::common_type<_T, float>::type> rad(basic_angle<_T, _Traits> const& angle) {
+		return radians<typename std::common_type<_T, float>::type> { angle };
 	}
 
 	template <typename _T, typename _Traits>
-	revolutions<typename std::common_type<_T, float>::type> revs(basic_angle<_T, _Traits> const& angle) {
-		return { angle };
+	constexpr revolutions<typename std::common_type<_T, float>::type> revs(basic_angle<_T, _Traits> const& angle) {
+		return revolutions<typename std::common_type<_T, float>::type> { angle };
 	}
 
 	template <typename _T, typename _Traits>
-	degrees<_T> deg(basic_angle<_T, _Traits> const& angle) {
-		return { angle };
+	constexpr degrees<_T> deg(basic_angle<_T, _Traits> const& angle) {
+		return degrees<_T> { angle };
 	}
 
 	template <typename _T, typename _Traits>
-	gradians<_T> grad(basic_angle<_T, _Traits> const& angle) {
-		return { angle };
+	constexpr gradians<_T> grad(basic_angle<_T, _Traits> const& angle) {
+		return gradians<_T> { angle };
 	}
 }
 
