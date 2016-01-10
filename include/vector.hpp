@@ -25,6 +25,7 @@ namespace math {
 		struct vector_base<_T, 2> {
 			_T x, y;
 
+			constexpr vector_base() = default;
 			vector_base(_T x, _T y) : x(x), y(y) {}
 
 			_T& operator [](std::size_t index) noexcept { return *(reinterpret_cast<_T*>(this) + index); }
@@ -35,6 +36,7 @@ namespace math {
 		struct vector_base<_T, 3> {
 			_T x, y, z;
 
+			constexpr vector_base() = default;
 			vector_base(_T x, _T y, _T z = static_cast<_T>(1))
 				: x(x), y(y), z(z) {}
 
@@ -46,6 +48,7 @@ namespace math {
 		struct vector_base<_T, 4> {
 			_T x, y, z, w;
 
+			constexpr vector_base() = default;
 			vector_base(_T x, _T y, _T z, _T w = static_cast<_T>(1))
 				: x(x), y(y), z(z), w(w) {}
 
