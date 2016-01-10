@@ -23,14 +23,11 @@ namespace math {
 		linear_array& operator -= (vector<_T, _N> const& other);
 		linear_array& operator *= (_T const& scalar);
 		linear_array& operator /= (_T const& scalar);
-
 	};
 
 	namespace internal {
 		template <typename _MatrixT> struct matrix_identity {};
-		template <typename _MatrixT> struct matrix_scaling {};
-		template <typename _MatrixT> struct matrix_rotation {};
-		template <typename _MatrixT> struct matrix_translation {};
+		template <typename _MatrixT> struct matrix_transforms {};
 
 		template <typename _T, std::size_t _N>
 		struct matrix_identity<matrix<_T, _N, _N>> {
@@ -41,14 +38,18 @@ namespace math {
 		// 2-dimensional matrix transforms.
 
 		template <typename _T>
-		struct matrix_scaling<matrix<_T, 3, 3>> {
+		struct matrix_transforms<matrix<_T, 3, 3>> {
+
+			////////////////////////////////////////////////////////////////////////
+			// scaling.
+
 			void scale(vector2<_T> const& scale) noexcept;
 
 			vector2<_T> scale() const noexcept;
-		}
 
-		template <typename _T>
-		struct matrix_translation<matrix<_T, 3, 3>> {
+			////////////////////////////////////////////////////////////////////////
+			// translation.
+
 			void translate(vector2<_T> const& translation) noexcept;
 			void translation(vector2<_T> const& translation) noexcept;
 
@@ -56,10 +57,10 @@ namespace math {
 			void translation(_T const& x, _T const& y) noexcept;
 
 			vector2<_T> translation() const noexcept;
-		};
 
-		template <typename _T>
-		struct matrix_rotation<matrix<_T, 3, 3>> {
+			////////////////////////////////////////////////////////////////////////
+			// rotation.
+
 			void rotate(radians<_T> const& angle) noexcept;
 			void rotation(radians<_T> const& angle) noexcept;
 
@@ -70,28 +71,41 @@ namespace math {
 		// 3-dimensional matrix transforms.
 
 		template <typename _T>
-		struct matrix_scaling<matrix<_T, 4, 4>> {
+		struct matrix_transforms<matrix<_T, 4, 4>> {
+
+			////////////////////////////////////////////////////////////////////////
+			// scaling.
+
 			void scale(vector3<_T> const& scale) noexcept;
 
 			vector3<_T> scale() const noexcept;
-		}
 
-		template <typename _T>
-		struct matrix_translation<matrix<_T, 4, 4>> {
+			////////////////////////////////////////////////////////////////////////
+			// translation.
+
 			void translate(vector3<_T> const& translation) noexcept;
-			void translation(vector3<_T> const& translation) noexcept {
-				auto mat = reinterpret_cast<matrix<_T, 4, 4>*>(this);
-			}
+			void translation(vector3<_T> const& translation) noexcept;
+
+			void translate(_T const& x, _T const& y, _T const& z) noexcept;
+			void translation(_T const& x, _T const& y, _T const& z) noexcept;
 
 			vector3<_T> translation() const noexcept;
-		};
 
-		template <typename _T>
-		struct matrix_rotation<matrix<_T, 4, 4>> {
-			void rotate(radians<_T> const& angle) noexcept;
-			void rotation(radians<_T> const& angle) noexcept;
+			////////////////////////////////////////////////////////////////////////
+			// rotation.
 
-			radians<_T> rotation() const noexcept;
+			void xrotate(radians<_T> const& angle) noexcept;
+			void xrotation(radians<_T> const& angle) noexcept;
+
+			void yrotate(radians<_T> const& angle) noexcept;
+			void yrotation(radians<_T> const& angle) noexcept;
+
+			void zrotate(radians<_T> const& angle) noexcept;
+			void zrotation(radians<_T> const& angle) noexcept;
+
+			radians<_T> xrotation() const noexcept;
+			radians<_T> yrotation() const noexcept;
+			radians<_T> zrotation() const noexcept;
 		};
 	}
 
@@ -101,9 +115,7 @@ namespace math {
 	template <typename _T, std::size_t _M, std::size_t _N>
 	struct matrix :
 		public internal::matrix_identity<matrix<_T, _M, _N>>,
-		public internal::matrix_scaling<matrix<_T, _M, _N>>,
-		public internal::matrix_rotation<matrix<_T, _M, _N>>,
-		public internal::matrix_translation<matrix<_T, _M, _N>> {
+		public internal::matrix_transforms<matrix<_T, _M, _N>> {
 
 		static_assert(std::is_arithmetic<_T>::value,
 			"matrix<T, M, N> requires arithmetic type.");
@@ -119,17 +131,50 @@ namespace math {
 		typedef _T* iterator;
 		typedef _T const* const_iterator;
 
+		////////////////////////////////////////////////////////////////////////////////
+
 		linear_array<_T, _N> operator [](size_type index) noexcept;
 		linear_array<_T, _N> const operator [](size_type index) const noexcept;
 
-		matrix operator -() const noexcept;
-		matrix operator +() const noexcept;
+		////////////////////////////////////////////////////////////////////////////////
+		// unary arithmetic operators.
 
-		matrix& operator += (matrix const& other) noexcept;
-		matrix& operator -= (matrix const& other) noexcept;
+		matrix operator +() const noexcept {
+			return *this;
+		}
+
+		matrix operator -() const noexcept {
+			return -1 * (*this);
+		}
+
+		////////////////////////////////////////////////////////////////////////////////
+		// compound arithmetic operators.
+
+		matrix& operator += (matrix const& other) noexcept {
+			std::transform(this->begin(), this->end(), other.begin(),
+				this->begin(), std::plus<_T>());
+			return *this;
+		}
+
+		matrix& operator -= (matrix const& other) noexcept {
+			std::transform(this->begin(), this->end(), other.begin(),
+				this->begin(), std::minus<_T>());
+			return *this;
+		}
+
 		matrix& operator *= (matrix const& other) noexcept;
-		matrix& operator *= (value_type const& other) noexcept;
-		matrix& operator /= (value_type const& other) noexcept;
+
+		matrix& operator *= (value_type const& scalar) noexcept {
+			std::transform(this->begin(), this->end(), this->begin(),
+				std::bind(std::multiplies<_T>(), std::placeholders::_1, scalar));
+			return *this;
+		}
+
+		matrix& operator /= (value_type const& scalar) noexcept {
+			std::transform(this->begin(), this->end(), this->begin(),
+				std::bind(std::divides<_T>(), std::placeholders::_1, scalar));
+			return *this;
+		}
 
 
 		typename std::common_type<_T, float>::type determinant() const noexcept;
@@ -140,12 +185,12 @@ namespace math {
 		matrix upper_decompose() const noexcept;
 		matrix lower_decompose() const noexcept;
 
-		iterator begin() noexcept;
-		iterator end() noexcept;
-		const_iterator begin() const noexcept;
-		const_iterator end() const noexcept;
-		const_iterator cbegin() const noexcept;
-		const_iterator cend() const noexcept;
+		iterator begin() noexcept { return { &_data[0]; } }
+		iterator end() noexcept { return { &_data[_M * _N]; } }
+		const_iterator begin() const noexcept { return { &_data[0]; } }
+		const_iterator end() const noexcept { return { &_data[_M * _N]; } }
+		const_iterator cbegin() const noexcept { return { &_data[0]; } }
+		const_iterator cend() const noexcept { return { &_data[_M * _N]; } }
 
 	private:
 		value_type _data[_M * _N];
