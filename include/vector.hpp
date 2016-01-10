@@ -82,8 +82,16 @@ namespace math {
 
 		using internal::vector_base<_T, _N>::vector_base;
 
-		constexpr vector operator -() const noexcept { return *this; }
-		constexpr vector operator +() const noexcept { return *this; }
+		////////////////////////////////////////////////////////////////////////////////
+		// unary arithmetic operators.
+
+		vector operator +() const noexcept {
+			return *this;
+		}
+
+		vector operator -() const noexcept {
+			return -1 * (*this);
+		}
 
 		////////////////////////////////////////////////////////////////////////////////
 		// compound arithmetic operators.
