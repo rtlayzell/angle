@@ -130,6 +130,8 @@ namespace math {
 
 		typedef _T* iterator;
 		typedef _T const* const_iterator;
+		typedef std::reverse_iterator<iterator> reverse_iterator;
+		typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
 		////////////////////////////////////////////////////////////////////////////////
 
@@ -191,6 +193,13 @@ namespace math {
 		const_iterator end() const noexcept { return { &_data[_M * _N]; } }
 		const_iterator cbegin() const noexcept { return { &_data[0]; } }
 		const_iterator cend() const noexcept { return { &_data[_M * _N]; } }
+
+		reverse_iterator rbegin() noexcept { return this->end(); }
+		reverse_iterator rend() noexcept { return this->begin(); }
+		const_reverse_iterator rbegin() const noexcept { return this->end(); }
+		const_reverse_iterator rend() const noexcept { return this->begin(); }
+		const_reverse_iterator crbegin() const noexcept { return this->cend(); }
+		const_reverse_iterator crend() const noexcept { return this->cbegin(); }
 
 	private:
 		value_type _data[_M * _N];
