@@ -188,11 +188,11 @@ namespace math {
 
 	////////////////////////////////////////////////////////////////////////////////
 
-	template <typename _T, typename _U, std::size_t _N>
-	bool operator == (vector<_T, _N> const& lhs, vector<_U, _N> const& rhs);
+	template <typename _T1, typename _T2, std::size_t _N>
+	bool operator == (vector<_T1, _N> const& lhs, vector<_T2, _N> const& rhs);
 
-	template <typename _T, typename _U, std::size_t _N>
-	bool operator != (vector<_T, _N> const& lhs, vector<_U, _N> const& rhs);
+	template <typename _T1, typename _T2, std::size_t _N>
+	bool operator != (vector<_T1, _N> const& lhs, vector<_T2, _N> const& rhs);
 
 	////////////////////////////////////////////////////////////////////////////////
 
@@ -228,27 +228,27 @@ namespace math {
 
 	////////////////////////////////////////////////////////////////////////////////
 
-	template <typename _T, typename _U>
-	vector<typename std::common_type<_T, _U>::type, 3> cross_product(vector<_T, 3> const& lhs, vector<_U, 3> const& rhs) {
-		typedef typename std::common_type<_T, _U>::type common_t;
+	template <typename _T1, typename _T2>
+	vector<typename std::common_type<_T1, _T2>::type, 3> cross_product(vector<_T1, 3> const& lhs, vector<_T2, 3> const& rhs) {
+		typedef typename std::common_type<_T1, _T2>::type common_t;
 		throw "not implemented";
 		return vector<common_t, 3> { };
 	}
 
-	template <typename _T, typename _U, std::size_t _N>
-	typename std::common_type<_T, _U, float>::type dot_product(vector<_T, _N> const& lhs, vector<_U, _N> const& rhs) {
-		typedef typename std::common_type<_T, _U, float>::type common_t;
+	template <typename _T1, typename _T2, std::size_t _N>
+	typename std::common_type<_T1, _T2, float>::type dot_product(vector<_T1, _N> const& lhs, vector<_T2, _N> const& rhs) {
+		typedef typename std::common_type<_T1, _T2, float>::type common_t;
 		return std::inner_product(lhs.begin(), lhs.end(), rhs.begin(), static_cast<common_t>(0));
 	}
 
- 	template <typename _T, typename _U, std::size_t _N>
- 	vector<typename std::common_type<_T, _U, float>::type, _N> projection(vector<_T, _N> const& vec, vector<_U, _N> const& n) {
+ 	template <typename _T1, typename _T2, std::size_t _N>
+ 	vector<typename std::common_type<_T1, _T2, float>::type, _N> projection(vector<_T1, _N> const& vec, vector<_T2, _N> const& n) {
 		return dot_product(vec, n) / dot_product(n, n) * n;
 	}
 
-	template <typename _T, typename _U, std::size_t _N>
- 	vector<typename std::common_type<_T, _U, float>::type, _N> reflection(vector<_T, _N> const& vec, vector<_U, _N> const& n) {
-		typedef typename std::common_type<_T, _U, float>::type common_t;
+	template <typename _T1, typename _T2, std::size_t _N>
+ 	vector<typename std::common_type<_T1, _T2, float>::type, _N> reflection(vector<_T1, _N> const& vec, vector<_T2, _N> const& n) {
+		typedef typename std::common_type<_T1, _T2, float>::type common_t;
 		return vec - static_cast<common_t>(2) * projection(vec, n);
 	}
 
@@ -262,13 +262,13 @@ namespace math {
 
 	////////////////////////////////////////////////////////////////////////////////
 
-	template <typename _T, typename _U, std::size_t _N>
-	radians<typename std::common_type<_T, _U, float>::type> inner_angle(vector<_T, _N> const& lhs, vector<_U, _N> const& rhs) {
-		return radians<typename std::common_type<_T, _U, float>::type> { std::acos(dot_product(lhs, rhs) / (lhs.length() * rhs.length())) };
+	template <typename _T1, typename _T2, std::size_t _N>
+	radians<typename std::common_type<_T1, _T2, float>::type> inner_angle(vector<_T1, _N> const& lhs, vector<_T2, _N> const& rhs) {
+		return radians<typename std::common_type<_T1, _T2, float>::type> { std::acos(dot_product(lhs, rhs) / (lhs.length() * rhs.length())) };
 	}
 
-	template <typename _T, typename _U, std::size_t _N>
-	radians<typename std::common_type<_T, _U, float>::type> outer_angle(vector<_T, _N> const& lhs, vector<_U, _N> const& rhs) {
+	template <typename _T1, typename _T2, std::size_t _N>
+	radians<typename std::common_type<_T1, _T2, float>::type> outer_angle(vector<_T1, _N> const& lhs, vector<_T2, _N> const& rhs) {
 		return math::pi * 2 - inner_angle(lhs, rhs);
 	}
 }
