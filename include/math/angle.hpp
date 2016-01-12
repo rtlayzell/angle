@@ -1,6 +1,7 @@
 #ifndef _MATH_ANGLE_HPP
 #define _MATH_ANGLE_HPP
 
+#include <cmath>
 #include <iosfwd>
 #include <type_traits>
 
@@ -75,13 +76,13 @@ namespace math {
 		constexpr basic_angle(basic_angle const&) = default;
 
 		//////////////////////////////////////////////////////////////////////////////
-		// assignment.
+		// assignment operators.
 
 		basic_angle& operator = (basic_angle&&) = default;
 		basic_angle& operator = (basic_angle const&) = default;
 
 		//////////////////////////////////////////////////////////////////////////////
-		// accessors.
+		// accessor methods.
 
 		constexpr value_type value() const noexcept {
 			return _value;
@@ -154,13 +155,7 @@ namespace math {
 		//////////////////////////////////////////////////////////////////////////////
 		// comparison operators.
 
-		friend bool operator == (basic_angle const& lhs, basic_angle const& rhs) noexcept {
-			return lhs._value == rhs._value;
-		}
 
-		friend bool operator < (basic_angle const& lhs, basic_angle const& rhs) noexcept {
-			return lhs._value < rhs._value;
-		}
 
 		//////////////////////////////////////////////////////////////////////////////
 		// conversion operators.
@@ -180,7 +175,8 @@ namespace math {
 
 		template <typename _T2, typename _Traits2>
 		constexpr basic_angle<_T2, _Traits2> _convert() const noexcept {
-			return basic_angle<_T2, _Traits2> { static_cast<_T2>(_value * _Traits2::pi() / _Traits::pi()) };
+			typedef typename std::common_type<_T, _T2>::type common_t;
+			return basic_angle<_T2, _Traits2> { static_cast<common_t>(_value) * _Traits2::pi() / _Traits::pi()  };
 		}
 	};
 
@@ -254,22 +250,32 @@ namespace math {
 	// comparison operators.
 
 	template <typename _T, typename _Traits>
-	inline constexpr bool operator != (basic_angle<_T, _Traits> const& lhs, basic_angle<_T, _Traits> const& rhs) {
+	inline constexpr bool operator == (basic_angle<_T, _Traits> const& lhs, typename std::common_type<basic_angle<_T, _Traits>>::type const& rhs) noexcept {
+		return lhs.value() == rhs.value();
+	}
+
+	template <typename _T, typename _Traits>
+	inline constexpr bool operator < (basic_angle<_T, _Traits> const& lhs, typename std::common_type<basic_angle<_T, _Traits>>::type const& rhs) noexcept {
+		return lhs.value() < rhs.value();
+	}
+
+	template <typename _T, typename _Traits>
+	inline constexpr bool operator != (basic_angle<_T, _Traits> const& lhs, typename std::common_type<basic_angle<_T, _Traits>>::type const& rhs) {
 		return !(lhs == rhs);
 	}
 
 	template <typename _T, typename _Traits>
-	inline constexpr bool operator <= (basic_angle<_T, _Traits> const& lhs, basic_angle<_T, _Traits> const& rhs) {
+	inline constexpr bool operator <= (basic_angle<_T, _Traits> const& lhs, typename std::common_type<basic_angle<_T, _Traits>>::type const& rhs) {
 		return !(rhs < lhs);
 	}
 
 	template <typename _T, typename _Traits>
-	inline constexpr bool operator >= (basic_angle<_T, _Traits> const& lhs, basic_angle<_T, _Traits> const& rhs) {
+	inline constexpr bool operator >= (basic_angle<_T, _Traits> const& lhs, typename std::common_type<basic_angle<_T, _Traits>>::type const& rhs) {
 		return !(lhs < rhs);
 	}
 
 	template <typename _T, typename _Traits>
-	inline constexpr bool operator > (basic_angle<_T, _Traits> const& lhs, basic_angle<_T, _Traits> const& rhs) {
+	inline constexpr bool operator > (basic_angle<_T, _Traits> const& lhs, typename std::common_type<basic_angle<_T, _Traits>>::type const& rhs) {
 		return rhs < lhs;
 	}
 
@@ -301,13 +307,13 @@ namespace math {
 	template <typename _T, typename _Traits>
 	constexpr radians<typename std::common_type<_T, float>::type> rad(basic_angle<_T, _Traits> const& angle) {
 		typedef typename std::common_type<_T, float>::type common_t;
-		return radians<common_t> { static_cast<common_t>(angle) };
+		return radians<common_t> { angle };
 	}
 
 	template <typename _T, typename _Traits>
 	constexpr revolutions<typename std::common_type<_T, float>::type> revs(basic_angle<_T, _Traits> const& angle) {
 		typedef typename std::common_type<_T, float>::type common_t;
-		return revolutions<common_t> { static_cast<common_t>(angle) };
+		return revolutions<common_t> { angle };
 	}
 
 	template <typename _T, typename _Traits>
@@ -320,5 +326,15 @@ namespace math {
 		return gradians<_T> { angle };
 	}
 }
+
+namespace math {
+	template <typename _T, typename _Traits>
+	inline typename std::common_type<_T, float>::type sin(basic_angle<_T, _Traits> const& x) { return std::sin(math::rad(x).value()); }
+	template <typename _T, typename _Traits>
+	inline typename std::common_type<_T, float>::type cos(basic_angle<_T, _Traits> const& x) { return std::cos(math::rad(x).value()); }
+	template <typename _T, typename _Traits>
+	inline typename std::common_type<_T, float>::type tan(basic_angle<_T, _Traits> const& x) { return std::tan(math::rad(x).value()); }
+}
+
 
 #endif // _MATH_ANGLE_HPP
