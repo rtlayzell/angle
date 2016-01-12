@@ -19,6 +19,10 @@ namespace math {
 			_T _data[_N];
 
 		public:
+
+			////////////////////////////////////////////////////////////////////////////////
+			// subscript operators.
+
 			_T& operator [](std::size_t index) noexcept { return _data[index]; }
 			_T const& operator [](std::size_t index) const noexcept { return _data[index]; }
 		};
@@ -26,6 +30,9 @@ namespace math {
 		template <typename _T>
 		struct vector_base<_T, 2> {
 			_T x, y;
+
+			////////////////////////////////////////////////////////////////////////////////
+			// constructors.
 
 			constexpr vector_base() = default;
 
@@ -35,6 +42,9 @@ namespace math {
 			vector_base(radians<_T> const& theta, _T radius = static_cast<_T>(1))
 				: x(radius * std::cos(theta.value()))
 				, y(radius * std::sin(theta.value())) {}
+
+			////////////////////////////////////////////////////////////////////////////////
+			// subscript operators.
 
 			_T& operator [](std::size_t index) noexcept {
 				return *(reinterpret_cast<_T*>(this) + index);
@@ -49,6 +59,9 @@ namespace math {
 		struct vector_base<_T, 3> {
 			_T x, y, z;
 
+			////////////////////////////////////////////////////////////////////////////////
+			// constructors.
+
 			constexpr vector_base() = default;
 
 			vector_base(_T x, _T y, _T z = static_cast<_T>(1))
@@ -58,6 +71,9 @@ namespace math {
 				: x(radius * std::sin(theta.value()) * std::cos(phi.value()))
 				, y(radius * std::sin(theta.value()) * std::sin(phi.value()))
 				, z(radius * std::cos(theta.value())) {}
+
+			////////////////////////////////////////////////////////////////////////////////
+			// subscript operators.
 
 			_T& operator [](std::size_t index) noexcept {
 				return *(reinterpret_cast<_T*>(this) + index);
@@ -72,9 +88,16 @@ namespace math {
 		struct vector_base<_T, 4> {
 			_T x, y, z, w;
 
+			////////////////////////////////////////////////////////////////////////////////
+			// constructors.
+
 			constexpr vector_base() = default;
+
 			vector_base(_T x, _T y, _T z, _T w = static_cast<_T>(1))
 				: x(x), y(y), z(z), w(w) {}
+
+			////////////////////////////////////////////////////////////////////////////////
+			// subscript operators.
 
 			_T& operator [](std::size_t index) noexcept {
 				return *(reinterpret_cast<_T*>(this) + index);
@@ -107,7 +130,7 @@ namespace math {
 		typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
 		////////////////////////////////////////////////////////////////////////////////
-		// construction.
+		// constructors.
 
 		using internal::vector_base<_T, _N>::vector_base;
 
@@ -186,15 +209,28 @@ namespace math {
 	template <typename _T> using vector3 = vector<_T, 3>;
 	template <typename _T> using vector4 = vector<_T, 4>;
 
-	////////////////////////////////////////////////////////////////////////////////
-
-	template <typename _T1, typename _T2, std::size_t _N>
-	bool operator == (vector<_T1, _N> const& lhs, vector<_T2, _N> const& rhs);
-
-	template <typename _T1, typename _T2, std::size_t _N>
-	bool operator != (vector<_T1, _N> const& lhs, vector<_T2, _N> const& rhs);
 
 	////////////////////////////////////////////////////////////////////////////////
+	// equality operators.
+
+	template <typename _T1, typename _T2, std::size_t _N>
+	bool operator == (vector<_T1, _N> const& lhs, vector<_T2, _N> const& rhs) {
+		auto last1 = lhs.end();
+		auto first1 = lhs.begin();
+		auto first2 = rhs.begin();
+
+		for (; *first1 == *first2; ++first1, ++first2)
+			if (first1 == last1) return true;
+		return false;
+	}
+
+	template <typename _T1, typename _T2, std::size_t _N>
+	bool operator != (vector<_T1, _N> const& lhs, vector<_T2, _N> const& rhs) {
+		return !(lhs == rhs);
+	}
+
+	////////////////////////////////////////////////////////////////////////////////
+	// binary arithmetic operators.
 
 	template <typename _T1, typename _T2, std::size_t _N>
 	vector<typename std::common_type<_T1, _T2>::type, _N> operator + (vector<_T1, _N> const& lhs, vector<_T2, _N> const& rhs) {
@@ -227,6 +263,7 @@ namespace math {
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
+	// functions.
 
 	template <typename _T1, typename _T2>
 	vector<typename std::common_type<_T1, _T2>::type, 3> cross_product(vector<_T1, 3> const& lhs, vector<_T2, 3> const& rhs) {
@@ -254,16 +291,6 @@ namespace math {
 		return vec - static_cast<common_t>(2) * projection(vec, n);
 	}
 
-	////////////////////////////////////////////////////////////////////////////////
-
-	template <typename _Elem, typename _Traits, typename _T, std::size_t _N>
-	std::basic_ostream<_Elem, _Traits>& operator << (std::basic_ostream<_Elem, _Traits>& os, vector<_T, _N> const& vec) {
-		std::copy(vec.begin(), vec.end(), std::ostream_iterator<_T, _Elem, _Traits>(os, ", "));
-		return os << "\b\b \b";
-	}
-
-	////////////////////////////////////////////////////////////////////////////////
-
 	template <typename _T1, typename _T2, std::size_t _N>
 	radians<typename std::common_type<_T1, _T2, float>::type> inner_angle(vector<_T1, _N> const& lhs, vector<_T2, _N> const& rhs) {
 		return radians<typename std::common_type<_T1, _T2, float>::type> { std::acos(dot_product(lhs, rhs) / (lhs.length() * rhs.length())) };
@@ -272,6 +299,58 @@ namespace math {
 	template <typename _T1, typename _T2, std::size_t _N>
 	radians<typename std::common_type<_T1, _T2, float>::type> outer_angle(vector<_T1, _N> const& lhs, vector<_T2, _N> const& rhs) {
 		return math::pi * 2 - inner_angle(lhs, rhs);
+	}
+
+
+	template <typename _T, std::size_t _N> vector<_T, _N> const& min(vector<_T, _N> const& vec) {
+		return vec;
+	}
+
+	template <typename _T, std::size_t _N> vector<_T, _N> const& max(vector<_T, _N> const& vec) {
+		return vec;
+	}
+
+	template <typename _T1, typename _T2, std::size_t _N>
+	vector<typename std::common_type<_T1, _T2>::type, _N> min(
+		vector<_T1, _N> const& lhs, vector<_T2, _N> const& rhs) {
+			vector<typename std::common_type<_T1, _T2>::type, _N> result;
+			std::transform(lhs.begin(), lhs.end(), rhs.begin(), result.begin(),
+				[](_T1 const& a, _T2 const& b) { return std::min(a, b); });
+			return result;
+		}
+
+	template <typename _T1, typename _T2, std::size_t _N>
+	vector<typename std::common_type<_T1, _T2>::type, _N> max(
+		vector<_T1, _N> const& lhs, vector<_T2, _N> const& rhs) {
+			vector<typename std::common_type<_T1, _T2>::type, _N> result;
+			std::transform(lhs.begin(), lhs.end(), rhs.begin(), result.begin(),
+				[](_T1 const& a, _T2 const& b) { return std::max(a, b); });
+			return result;
+		}
+
+	template <typename _T1, typename _T2, typename... _Ts, std::size_t _N>
+	vector<typename std::common_type<_T1, _T2, _Ts...>::type, _N> min(
+		vector<_T1, _N> const& v1,
+		vector<_T2, _N> const& v2,
+		vector<_Ts, _N> const&... vs) {
+			return min(min(v1, v2), vs...);
+		}
+
+	template <typename _T1, typename _T2, typename... _Ts, std::size_t _N>
+	vector<typename std::common_type<_T1, _T2, _Ts...>::type, _N> max(
+		vector<_T1, _N> const& v1,
+		vector<_T2, _N> const& v2,
+		vector<_Ts, _N> const&... vs) {
+			return max(max(v1, v2), vs...);
+		}
+
+	////////////////////////////////////////////////////////////////////////////////
+	// streaming operators.
+
+	template <typename _Elem, typename _Traits, typename _T, std::size_t _N>
+	std::basic_ostream<_Elem, _Traits>& operator << (std::basic_ostream<_Elem, _Traits>& os, vector<_T, _N> const& vec) {
+		std::copy(vec.begin(), vec.end(), std::ostream_iterator<_T, _Elem, _Traits>(os, ", "));
+		return os << "\b\b \b";
 	}
 }
 
