@@ -231,8 +231,10 @@ namespace math {
 	template <typename _T1, typename _T2>
 	vector<typename std::common_type<_T1, _T2>::type, 3> cross_product(vector<_T1, 3> const& lhs, vector<_T2, 3> const& rhs) {
 		typedef typename std::common_type<_T1, _T2>::type common_t;
-		throw "not implemented";
-		return vector<common_t, 3> { };
+		return vector<common_t, 3> {
+			lhs.y * rhs.z - lhs.z * rhs.y,
+			lhs.z * rhs.x - lhs.x * rhs.z,
+			lhs.x * rhs.y - lhs.y * rhs.x };
 	}
 
 	template <typename _T1, typename _T2, std::size_t _N>
