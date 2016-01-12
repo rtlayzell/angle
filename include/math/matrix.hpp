@@ -187,6 +187,14 @@ namespace math {
 		matrix upper_decompose() const noexcept;
 		matrix lower_decompose() const noexcept;
 
+		pointer data() noexcept {
+			return _data;
+		}
+
+		const_pointer data() const noexcept {
+			return _data;
+		}
+
 		iterator begin() noexcept { return { &_data[0]; } }
 		iterator end() noexcept { return { &_data[_M * _N]; } }
 		const_iterator begin() const noexcept { return { &_data[0]; } }
