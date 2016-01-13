@@ -13,10 +13,10 @@ endif
 ifeq ($(config),debug)
   RESCOMP = windres
   TARGETDIR = build/debug
-  TARGET = $(TARGETDIR)/angle-test.exe
+  TARGET = $(TARGETDIR)/a.exe
   OBJDIR = obj/debug
   DEFINES += -DDEBUG
-  INCLUDES += -Iinclude
+  INCLUDES += -Imath
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -g -std=c++11 -Wall -Wextra
@@ -40,10 +40,10 @@ endif
 ifeq ($(config),release)
   RESCOMP = windres
   TARGETDIR = build/release
-  TARGET = $(TARGETDIR)/angle-test.exe
+  TARGET = $(TARGETDIR)/a.exe
   OBJDIR = obj/release
   DEFINES += -DNDEBUG
-  INCLUDES += -Iinclude
+  INCLUDES += -Imath
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -O2 -std=c++11 -Wall -Wextra
@@ -80,7 +80,7 @@ ifeq (/bin,$(findstring /bin,$(SHELL)))
 endif
 
 $(TARGET): $(GCH) $(OBJECTS) $(LDDEPS) $(RESOURCES) ${CUSTOMFILES}
-	@echo Linking angle-test
+	@echo Linking executable
 	$(SILENT) $(LINKCMD)
 	$(POSTBUILDCMDS)
 
@@ -101,7 +101,7 @@ else
 endif
 
 clean:
-	@echo Cleaning angle-test
+	@echo Cleaning build directories
 ifeq (posix,$(SHELLTYPE))
 	$(SILENT) rm -f  $(TARGET)
 	$(SILENT) rm -rf $(OBJDIR)
