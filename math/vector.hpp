@@ -203,6 +203,24 @@ namespace math {
 
 		const_reverse_iterator crbegin() const noexcept { return this->cend(); }
 		const_reverse_iterator crend() const noexcept { return this->cbegin(); }
+
+		////////////////////////////////////////////////////////////////////////////////
+		// conversion operators.
+
+		template <typename _T2>
+		operator vector<_T2, _N>() const noexcept {
+			vector<_T2, _N> result;
+			std::copy(this->begin(), this->end(), result.begin());
+			return result;
+		}
+
+		template <typename _T2>
+		operator vector<_T2, _N + 1>() const noexcept {
+			vector<_T2, _N + 1> result;
+			std::copy(this->begin(), this->end(), result.begin());
+			*(result.end() - 1) = static_cast<_T2>(1);
+			return result;
+		}
 	};
 
 	template <typename _T> using vector2 = vector<_T, 2>;
@@ -233,31 +251,31 @@ namespace math {
 	// binary arithmetic operators.
 
 	template <typename _T1, typename _T2, std::size_t _N>
-	vector<typename std::common_type<_T1, _T2>::type, _N> operator + (vector<_T1, _N> const& lhs, vector<_T2, _N> const& rhs) {
+	inline vector<typename std::common_type<_T1, _T2>::type, _N> operator + (vector<_T1, _N> const& lhs, vector<_T2, _N> const& rhs) {
 		typedef typename std::common_type<_T1, _T2>::type common_t;
 		return vector<common_t, _N>(lhs) += rhs;
 	}
 
 	template <typename _T1, typename _T2, std::size_t _N>
-	vector<typename std::common_type<_T1, _T2>::type, _N> operator - (vector<_T1, _N> const& lhs, vector<_T2, _N> const& rhs) {
+	inline vector<typename std::common_type<_T1, _T2>::type, _N> operator - (vector<_T1, _N> const& lhs, vector<_T2, _N> const& rhs) {
 		typedef typename std::common_type<_T1, _T2>::type common_t;
 		return vector<common_t, _N>(lhs) -= rhs;
 	}
 
 	template <typename _T1, typename _T2, std::size_t _N>
-	vector<typename std::common_type<_T1, _T2>::type, _N> operator * (vector<_T1, _N> const& vec, _T2 scalar) {
+	inline vector<typename std::common_type<_T1, _T2>::type, _N> operator * (vector<_T1, _N> const& vec, _T2 scalar) {
 		typedef typename std::common_type<_T1, _T2>::type common_t;
 		return vector<common_t, _N>(vec) *= scalar;
 	}
 
 	template <typename _T1, typename _T2, std::size_t _N>
-	vector<typename std::common_type<_T1, _T2>::type, _N> operator * (_T1 scalar, vector<_T2, _N> const& vec) {
+	inline vector<typename std::common_type<_T1, _T2>::type, _N> operator * (_T1 scalar, vector<_T2, _N> const& vec) {
 		typedef typename std::common_type<_T1, _T2>::type common_t;
 		return vector<common_t, _N>(vec) *= scalar;
 	}
 
 	template <typename _T1, typename _T2, std::size_t _N>
-	vector<typename std::common_type<_T1, _T2>::type, _N> operator / (vector<_T1, _N> const& vec, _T2 scalar) {
+	inline vector<typename std::common_type<_T1, _T2>::type, _N> operator / (vector<_T1, _N> const& vec, _T2 scalar) {
 		typedef typename std::common_type<_T1, _T2>::type common_t;
 		return vector<common_t, _N>(vec) /= scalar;
 	}
@@ -302,13 +320,8 @@ namespace math {
 	}
 
 
-	template <typename _T, std::size_t _N> vector<_T, _N> const& min(vector<_T, _N> const& vec) {
-		return vec;
-	}
-
-	template <typename _T, std::size_t _N> vector<_T, _N> const& max(vector<_T, _N> const& vec) {
-		return vec;
-	}
+	template <typename _T, std::size_t _N> vector<_T, _N> const& min(vector<_T, _N> const& vec) { return vec; }
+	template <typename _T, std::size_t _N> vector<_T, _N> const& max(vector<_T, _N> const& vec) { return vec; }
 
 	template <typename _T1, typename _T2, std::size_t _N>
 	vector<typename std::common_type<_T1, _T2>::type, _N> min(
