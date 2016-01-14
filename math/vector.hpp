@@ -233,13 +233,13 @@ namespace math {
 
 	template <typename _T1, typename _T2, std::size_t _N>
 	bool operator == (vector<_T1, _N> const& lhs, vector<_T2, _N> const& rhs) {
-		auto last1 = lhs.end();
 		auto first1 = lhs.begin();
 		auto first2 = rhs.begin();
+		auto last1 = lhs.end();
 
-		for (; *first1 == *first2; ++first1, ++first2)
-			if (first1 == last1) return true;
-		return false;
+		for (; first1 != last1; ++first1, ++first2)
+			if (!(*first1 == *first2)) return false;
+		return true;
 	}
 
 	template <typename _T1, typename _T2, std::size_t _N>
@@ -325,7 +325,8 @@ namespace math {
 
 	template <typename _T1, typename _T2, std::size_t _N>
 	vector<typename std::common_type<_T1, _T2>::type, _N> min(
-		vector<_T1, _N> const& lhs, vector<_T2, _N> const& rhs) {
+		vector<_T1, _N> const& lhs,
+		vector<_T2, _N> const& rhs) {
 			vector<typename std::common_type<_T1, _T2>::type, _N> result;
 			std::transform(lhs.begin(), lhs.end(), rhs.begin(), result.begin(),
 				[](_T1 const& a, _T2 const& b) { return std::min(a, b); });
@@ -334,7 +335,8 @@ namespace math {
 
 	template <typename _T1, typename _T2, std::size_t _N>
 	vector<typename std::common_type<_T1, _T2>::type, _N> max(
-		vector<_T1, _N> const& lhs, vector<_T2, _N> const& rhs) {
+		vector<_T1, _N> const& lhs,
+		vector<_T2, _N> const& rhs) {
 			vector<typename std::common_type<_T1, _T2>::type, _N> result;
 			std::transform(lhs.begin(), lhs.end(), rhs.begin(), result.begin(),
 				[](_T1 const& a, _T2 const& b) { return std::max(a, b); });
