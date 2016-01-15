@@ -13,7 +13,7 @@ endif
 ifeq ($(config),debug)
   RESCOMP = windres
   TARGETDIR = build/debug
-  TARGET = $(TARGETDIR)/a.exe
+  TARGET = $(TARGETDIR)/math-test.exe
   OBJDIR = obj/debug
   DEFINES += -DDEBUG
   INCLUDES += -Imath
@@ -25,7 +25,7 @@ ifeq ($(config),debug)
   LIBS +=
   LDDEPS +=
   ALL_LDFLAGS += $(LDFLAGS)
-  LINKCMD = $(CXX) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
+  LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS
@@ -40,7 +40,7 @@ endif
 ifeq ($(config),release)
   RESCOMP = windres
   TARGETDIR = build/release
-  TARGET = $(TARGETDIR)/a.exe
+  TARGET = $(TARGETDIR)/math-test.exe
   OBJDIR = obj/release
   DEFINES += -DNDEBUG
   INCLUDES += -Imath
@@ -52,7 +52,7 @@ ifeq ($(config),release)
   LIBS +=
   LDDEPS +=
   ALL_LDFLAGS += $(LDFLAGS) -s
-  LINKCMD = $(CXX) -o $(TARGET) $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
+  LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
   define PRELINKCMDS
@@ -79,8 +79,8 @@ ifeq (/bin,$(findstring /bin,$(SHELL)))
   SHELLTYPE := posix
 endif
 
-$(TARGET): $(GCH) $(OBJECTS) $(LDDEPS) $(RESOURCES) ${CUSTOMFILES}
-	@echo Linking executable
+$(TARGET): $(GCH) ${CUSTOMFILES} $(OBJECTS) $(LDDEPS) $(RESOURCES)
+	@echo Linking math-test
 	$(SILENT) $(LINKCMD)
 	$(POSTBUILDCMDS)
 
@@ -101,7 +101,7 @@ else
 endif
 
 clean:
-	@echo Cleaning build directories
+	@echo Cleaning math-test
 ifeq (posix,$(SHELLTYPE))
 	$(SILENT) rm -f  $(TARGET)
 	$(SILENT) rm -rf $(OBJDIR)
