@@ -89,7 +89,7 @@ namespace math {
 		}
 
 		//////////////////////////////////////////////////////////////////////////////
-		// compound arithmetic operators.
+		// unary arithmetic operators.
 
 		constexpr basic_angle operator +() const noexcept {
 			return basic_angle { _value };
@@ -98,6 +98,9 @@ namespace math {
 		constexpr basic_angle operator -() const noexcept {
 			return basic_angle { -_value };
 		}
+
+		//////////////////////////////////////////////////////////////////////////////
+		// compound arithmetic operators.
 
 		basic_angle& operator ++() noexcept {
 			++_value;
@@ -153,12 +156,7 @@ namespace math {
 		}
 
 		//////////////////////////////////////////////////////////////////////////////
-		// comparison operators.
-
-
-
-		//////////////////////////////////////////////////////////////////////////////
-		// conversion operators.
+		// streaming operators.
 
 		template <typename _CharT, typename _OsTraits>
 		friend std::basic_ostream<_CharT, _OsTraits>& operator << (std::basic_ostream<_CharT, _OsTraits>& ostr, basic_angle const& angle) {
