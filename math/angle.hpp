@@ -11,8 +11,13 @@ namespace math {
 	struct radian_traits {
 		static_assert(::std::is_floating_point<_T>::value,
 			"radian_traits<_T> requires floating point type.");
+
+	private:
+		static constexpr _T _pivalue =
+			std::acos(static_cast<_T>(-1));
+	public:
 		static constexpr _T pi() noexcept {
-			return static_cast<_T>(3.14159265359);
+			return _pivalue;
 		}
 	};
 
